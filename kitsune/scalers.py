@@ -1,11 +1,11 @@
-import pickle
-from typing import Iterable, Tuple, Union
-from pathlib import Path
 import os
+import pickle
+from pathlib import Path
+from typing import Iterable, Tuple, Union
 
-from tqdm import tqdm
-from torchdata.datapipes.iter import IterDataPipe
 import torch
+from torchdata.datapipes.iter import IterDataPipe
+from tqdm import tqdm
 
 
 class BatchTorchMinMaxScaler:

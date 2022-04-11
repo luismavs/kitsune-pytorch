@@ -1,8 +1,8 @@
+import os
 import pickle
 from doctest import UnexpectedException
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
-import os
 
 import torch
 import torch.nn as nn
