@@ -2,7 +2,6 @@ from operator import mod
 from  pathlib import Path
 
 import numpy as np
-import dill
 
 from kitsune.data import build_input_data_pipe, FileFormat
 from kitsune.scalers import BatchTorchMinMaxScaler

@@ -16,7 +16,6 @@ setup(
     "pandas~=1.2",
     "scikit-learn~=0.24",
     "scipy~=1.8.0",
-    "dill",
     "tqdm~=4.64"],
     zip_safe=False,
 )

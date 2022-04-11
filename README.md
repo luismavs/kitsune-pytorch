@@ -104,7 +104,7 @@ This requirements.in is known to work on a python=3.10, and is for dev purposes 
 
 ```
 pip install pip pip-tools --upgrade
-pip-compile requirements.in --extra-index-url https://download.pytorch.org/whl/cpu
+pip-compile requirements.in --extra-index-url https://download.pytorch.org/whl/cpu  --upgrade
 ```
 
 To install locally
