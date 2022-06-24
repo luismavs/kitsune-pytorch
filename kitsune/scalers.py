@@ -1,7 +1,7 @@
 import json
 import os
-import pickle
 from pathlib import Path
+import pickle
 from typing import Iterable, Optional, Tuple, Union
 
 import torch
@@ -47,11 +47,11 @@ class BatchTorchMinMaxScaler:
     def _create_batch_tensors(self):
         """create a tensor with size of batch filled with duplicates of xmnin and xmaxmin"""
 
-        self.xmin_batch = torch.vstack([self.x_min for bb in range(self.batch_size)])
+        self.xmin_batch = torch.vstack(
+            [self.x_min for bb in range(self.batch_size)])
         self.xmaxmxmin_batch = (
-            torch.vstack([self.x_max for bb in range(self.batch_size)])
-            - self.xmin_batch
-        )
+            torch.vstack([self.x_max for bb in range(self.batch_size)]) -
+            self.xmin_batch)
 
         return
 
@@ -106,9 +106,8 @@ class BatchTorchMinMaxScaler:
 
     def _scale_batch(self, batch: torch.Tensor):
         xp = (batch - self.xmin_batch) / self.xmaxmxmin_batch
-        xp = (
-            xp * (self.feature_range[1] - self.feature_range[0]) + self.feature_range[0]
-        )
+        xp = (xp * (self.feature_range[1] - self.feature_range[0]) +
+              self.feature_range[0])
         xp = torch.nan_to_num(xp)  # for columns with constant values
         return xp
 
@@ -187,8 +186,8 @@ class BatchTorchMinMaxScaler:
             parameters = json.load(f)
 
         scaler: BatchTorchMinMaxScaler = BatchTorchMinMaxScaler(
-            parameters["feature_range"], parameters["dim"], parameters["batch_size"]
-        )
+            parameters["feature_range"], parameters["dim"],
+            parameters["batch_size"])
         scaler.x_min = torch.FloatTensor(parameters["x_min"])
         scaler.x_max = torch.FloatTensor(parameters["x_max"])
 

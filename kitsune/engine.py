@@ -6,10 +6,12 @@ import torch
 import torch.nn as nn
 from tqdm import tqdm
 
-from kitsune.models import FeatureMapper, Kitsune
+from kitsune.models import FeatureMapper
+from kitsune.models import Kitsune
 
 
 def timeit(method):
+
     def timed(*args, **kwargs):
         ts = time()
         result = method(*args, **kwargs)
@@ -36,9 +38,9 @@ def build_feature_mapper(
 
 @torch.inference_mode()
 def predict(
-    model: Kitsune,
-    ds: Iterable[torch.Tensor],
-    device: torch.device = torch.device("cpu"),
+        model: Kitsune,
+        ds: Iterable[torch.Tensor],
+        device: torch.device = torch.device("cpu"),
 ) -> torch.Tensor:
     predictions = []
     model.eval()
@@ -51,12 +53,12 @@ def predict(
 
 @timeit
 def train_single_epoch(
-    model: Kitsune,
-    ds: Iterable[torch.Tensor],
-    optimizer: torch.optim.Optimizer,
-    log_every: int = 60,
-    epoch: int = 0,
-    device: torch.device = torch.device("cpu"),
+        model: Kitsune,
+        ds: Iterable[torch.Tensor],
+        optimizer: torch.optim.Optimizer,
+        log_every: int = 60,
+        epoch: int = 0,
+        device: torch.device = torch.device("cpu"),
 ) -> Tuple[Kitsune, dict]:
     """Train one round using all the data.
 
@@ -101,11 +103,9 @@ def train_single_epoch(
         if i % log_every == 0:
             tail_loss_mean = running_tail / i
             head_loss_mean = running_head / i
-            logging.info(
-                f"Epoch [{epoch}]  "
-                f"tail losses {tail_loss_mean:.5f}  "
-                f"head loss: {head_loss_mean:.5f}"
-            )
+            logging.info(f"Epoch [{epoch}]  "
+                         f"tail losses {tail_loss_mean:.5f}  "
+                         f"head loss: {head_loss_mean:.5f}")
             losses = {
                 "epoch": epoch,
                 "tail_losses": tail_loss_mean,
