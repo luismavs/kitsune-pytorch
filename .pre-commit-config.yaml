@@ -14,7 +14,7 @@ repos:
     -   id: isort
         name: isort (python)
         args: ["--profile", "black"]
--   repo: https://github.com/psf/black
-    rev: 22.3.0
+-   repo: https://github.com/pre-commit/mirrors-yapf
+    rev: ''
     hooks:
-    -   id: black
+    -   id: yapf

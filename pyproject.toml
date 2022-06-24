@@ -1,9 +1,10 @@
 [project]
 name = "kitsune"
-version = "0.1.0"
+version = "0.2.8"
 description = "Kitsune anomaly detection model implemented in PyTorch."
 authors = [
-    "Guillem Orellana Trullols <guillem.orellana@gmail.com>"
+    "Guillem Orellana Trullols <guillem.orellana@gmail.com>",
+    "Luís Seabra <luismavseabra@gmail.com>"
 ]
 #license = "GPLv3"
 readme = "README.md"
@@ -17,13 +18,16 @@ keywords = ["deep-learning", "pytorch", "anomaly", "detection", "unsupervised", 
 typer = "^0.3.2"
 torch = "^1.11.0"
 torchdata = "^0.3.0"
-pandas = "^1.2.4"
-scikit-learn = "^0.24.2"
-scipy = "^1.6.3"
+tqdm = "^4.64.0"
+pandas = "^1.4.2"       #"^1.2.4"
+scikit-learn = "^1.0.2" #"^0.24.2"
+scipy = "^1.8.0"        #"^1.6.3"
 
 [dev-dependencies]
 yapf = "*"
 mypy = "*"
+pip-audit = "*"
+toml = "*"
 
 [tool.yapf]
 based_on_style = "google"
