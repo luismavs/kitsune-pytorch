@@ -1,11 +1,13 @@
-import os
-import pickle
 from doctest import UnexpectedException
+import os
 from pathlib import Path
+import pickle
 from typing import Any, Dict, List, Optional, Union
 
+from scipy.cluster.hierarchy import ClusterNode
+from scipy.cluster.hierarchy import linkage
+from scipy.cluster.hierarchy import to_tree
 import torch
-from scipy.cluster.hierarchy import ClusterNode, linkage, to_tree
 from torch import nn
 
 
@@ -42,24 +44,24 @@ class FeatureMapper:
 
     def _init_stats(self) -> None:
         # linear num of features
-        self.running_sum = torch.zeros(
-            self.dim, requires_grad=False, dtype=torch.float64
-        )
+        self.running_sum = torch.zeros(self.dim,
+                                       requires_grad=False,
+                                       dtype=torch.float64)
 
         # linear sum of feature residuals
-        self.running_residuals = torch.zeros(
-            self.dim, requires_grad=False, dtype=torch.float64
-        )
+        self.running_residuals = torch.zeros(self.dim,
+                                             requires_grad=False,
+                                             dtype=torch.float64)
 
         # squared sum of feature residuals
-        self.running_squared_residuals = torch.zeros(
-            self.dim, requires_grad=False, dtype=torch.float64
-        )
+        self.running_squared_residuals = torch.zeros(self.dim,
+                                                     requires_grad=False,
+                                                     dtype=torch.float64)
 
         # partial correlation matrix
-        self.running_corr_mat = torch.zeros(
-            (self.dim, self.dim), requires_grad=False, dtype=torch.float64
-        )
+        self.running_corr_mat = torch.zeros((self.dim, self.dim),
+                                            requires_grad=False,
+                                            dtype=torch.float64)
         self.seen_samples = 0
         self._fitted = False
         self._clusters = []
@@ -83,10 +85,8 @@ class FeatureMapper:
             raise ValueError(f"Invalid number of input axes: {x.dim()}")
 
         if x.size(-1) != self.dim:
-            raise ValueError(
-                f"Invalid number of input dims: got {x.size(-1)} "
-                f"expected {self.dim}"
-            )
+            raise ValueError(f"Invalid number of input dims: got {x.size(-1)} "
+                             f"expected {self.dim}")
 
         if x.dim() == 1:
             x = x.unsqueeze(0)
@@ -151,7 +151,8 @@ class FeatureMapper:
             If `fit` or `partial_fit` has not been called yet.
         """
         if not self._fitted:
-            raise UnexpectedException("fit or partial_fit has not been called yet")
+            raise UnexpectedException(
+                "fit or partial_fit has not been called yet")
         return self._clusters
 
     @property
@@ -284,11 +285,13 @@ class RMSELoss(nn.Module):
         super().__init__()
         self.criterion = nn.MSELoss(**kwargs)
 
-    def forward(self, inputs: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+    def forward(self, inputs: torch.Tensor,
+                targets: torch.Tensor) -> torch.Tensor:
         return torch.sqrt(self.criterion(inputs, targets) + 1e-7)
 
 
 class Kitsune(nn.Module):
+
     def __init__(
         self,
         feature_mapper: FeatureMapper,
@@ -298,10 +301,8 @@ class Kitsune(nn.Module):
         super().__init__()
         self.fm = feature_mapper
         if not self.fm._fitted:
-            raise ValueError(
-                "Kitsune needs a fitted `feature_map`. "
-                "Make sure you call `.fit` method before hand."
-            )
+            raise ValueError("Kitsune needs a fitted `feature_map`. "
+                             "Make sure you call `.fit` method before hand.")
 
         self.compression_rate = compression_rate
         self.dropout_rate = dropout_rate
@@ -315,19 +316,15 @@ class Kitsune(nn.Module):
 
         self.mse = RMSELoss(reduction="none")
 
-    def _build_tails(
-        self, compression_rate: float, dropout_rate: float
-    ) -> List[nn.Module]:
-        return nn.ModuleList(
-            [
-                TinyAutoEncoder(
-                    in_features=len(c),
-                    compression_rate=compression_rate,
-                    dropout_rate=dropout_rate,
-                )
-                for c in self.fm.clusters_
-            ]
-        )
+    def _build_tails(self, compression_rate: float,
+                     dropout_rate: float) -> List[nn.Module]:
+        return nn.ModuleList([
+            TinyAutoEncoder(
+                in_features=len(c),
+                compression_rate=compression_rate,
+                dropout_rate=dropout_rate,
+            ) for c in self.fm.clusters_
+        ])
 
     def forward(self, x: torch.Tensor) -> Dict[str, torch.Tensor]:
         split_feat = self.fm.transform(x)
@@ -360,9 +357,9 @@ class Kitsune(nn.Module):
         torch.save(chkp, fpath)
 
     @classmethod
-    def from_pretrained(
-        cls, fpath: Union[str, Path], map_location: Optional[torch.device] = None
-    ):
+    def from_pretrained(cls,
+                        fpath: Union[str, Path],
+                        map_location: Optional[torch.device] = None):
         chkp = torch.load(fpath, map_location=map_location)
         model: Kitsune = cls(**chkp.pop("config"))
         model.eval()

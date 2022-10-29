@@ -1,12 +1,15 @@
 import enum
-import logging
 from itertools import zip_longest
-from typing import IO, Any, Dict, Iterable, Iterator, List, Optional, Tuple, Union
+import logging
+from typing import (Any, Dict, IO, Iterable, Iterator, List, Optional, Tuple,
+                    Union)
 
 import pandas as pd
 import torch
 from torchdata.datapipes import functional_datapipe
-from torchdata.datapipes.iter import FileLister, FileOpener, IterDataPipe
+from torchdata.datapipes.iter import FileLister
+from torchdata.datapipes.iter import FileOpener
+from torchdata.datapipes.iter import IterDataPipe
 
 ParquetRow = Dict[str, Any]
 ParquetParserReturnType = Union[ParquetRow, Tuple[str, Any]]
@@ -31,6 +34,7 @@ class FileFormat(enum.Enum):
 
 @functional_datapipe("parse_parquet")
 class ParquetParserIterDataPipe(IterDataPipe[ParquetParserReturnType]):
+
     def __init__(
         self,
         source_datapipe: IterDataPipe[Tuple[str, IO]],
@@ -47,9 +51,9 @@ class ParquetParserIterDataPipe(IterDataPipe[ParquetParserReturnType]):
 
     def __iter__(self) -> Iterator[ParquetParserReturnType]:
         for path, io_file in self.source_datapipe:
-            parquet_df = pd.read_parquet(
-                io_file, engine=self.engine, columns=self.columns
-            )
+            parquet_df = pd.read_parquet(io_file,
+                                         engine=self.engine,
+                                         columns=self.columns)
 
             it = (o[1].to_dict() for o in parquet_df.iterrows())
             if self.return_path:
@@ -93,7 +97,8 @@ def _to_dense_vector(row: ParquetRow) -> torch.Tensor:
     if sample_features["indices"] is not None:
         features = torch.zeros((int(sample_features["size"]),)).float()
         indices = torch.as_tensor(sample_features["indices"].copy()).long()
-        features[indices] = torch.as_tensor(sample_features["values"].copy()).float()
+        features[indices] = torch.as_tensor(
+            sample_features["values"].copy()).float()
     else:
         features = torch.as_tensor(sample_features["values"].copy()).float()
     return features
@@ -101,9 +106,9 @@ def _to_dense_vector(row: ParquetRow) -> torch.Tensor:
 
 if __name__ == "__main__":
     # parquet_dp = FileLister(root="data/parquet")
-    dp = build_input_data_pipe(
-        root="data/kitnet-test", batch_size=16, file_format=FileFormat.csv
-    )
+    dp = build_input_data_pipe(root="data/kitnet-test",
+                               batch_size=16,
+                               file_format=FileFormat.csv)
     for features in dp:
         logging.info(features.size())
         break

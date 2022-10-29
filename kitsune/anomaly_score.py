@@ -6,19 +6,20 @@ from pathlib import Path
 import torch
 
 from kitsune import engine
-from kitsune.data import FileFormat, build_input_data_pipe
+from kitsune.data import build_input_data_pipe
+from kitsune.data import FileFormat
 from kitsune.models import Kitsune
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def compute_anomaly_scores(
-    path: Path,
-    scores_dir: Path,
-    batch_size: int = 32,
-    n_scores_partition: int = 4,
-    file_format: FileFormat = FileFormat("csv"),
-    model_checkpoint: Path = Path("models/kitsune.pt"),
+        path: Path,
+        scores_dir: Path,
+        batch_size: int = 32,
+        n_scores_partition: int = 4,
+        file_format: FileFormat = FileFormat("csv"),
+        model_checkpoint: Path = Path("models/kitsune.pt"),
 ) -> dict:
 
     scores_dir.mkdir(exist_ok=True, parents=True)
@@ -28,9 +29,10 @@ def compute_anomaly_scores(
     model.to(device)
 
     logging.info("🦊 Building scoring data pipeline...")
-    dp = build_input_data_pipe(
-        root=str(path), batch_size=batch_size, file_format=file_format, shuffle=False
-    )
+    dp = build_input_data_pipe(root=str(path),
+                               batch_size=batch_size,
+                               file_format=file_format,
+                               shuffle=False)
 
     logging.info("🦊 Running inference...")
     scores = engine.predict(model, dp, device=device)

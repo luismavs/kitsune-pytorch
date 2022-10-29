@@ -1,15 +1,19 @@
 import json
 import logging
-import random
 from pathlib import Path
+import random
 from typing import Optional
 
 import numpy as np
 import torch
 
-from kitsune.data import FileFormat, build_input_data_pipe, get_dimensions
-from kitsune.engine import build_feature_mapper, train_single_epoch
-from kitsune.models import FeatureMapper, Kitsune
+from kitsune.data import build_input_data_pipe
+from kitsune.data import FileFormat
+from kitsune.data import get_dimensions
+from kitsune.engine import build_feature_mapper
+from kitsune.engine import train_single_epoch
+from kitsune.models import FeatureMapper
+from kitsune.models import Kitsune
 from kitsune.scalers import BatchTorchMinMaxScaler
 
 logging.basicConfig(level=logging.INFO)
@@ -61,9 +65,10 @@ def train(
     torch.manual_seed(seed)
     np.random.seed(seed)
 
-    dp = build_input_data_pipe(
-        str(input_path), batch_size=batch_size, shuffle=True, file_format=file_format
-    )
+    dp = build_input_data_pipe(str(input_path),
+                               batch_size=batch_size,
+                               shuffle=True,
+                               file_format=file_format)
 
     if n_samples is None or n_features is None:
         logging.info("🦊 Getting data dimensions ...")
@@ -94,14 +99,16 @@ def train(
         scaler.fit(dp)
     else:
         scaler: BatchTorchMinMaxScaler = BatchTorchMinMaxScaler.load(
-            Path(prefit_scaler).parent
-        )
+            Path(prefit_scaler).parent)
     dp = scaler.transform(dp)
 
-    model = Kitsune(feature_mapper=feature_mapper, compression_rate=compression_rate)
+    model = Kitsune(feature_mapper=feature_mapper,
+                    compression_rate=compression_rate)
     model.to(device)
 
-    optimizer = torch.optim.SGD(model.parameters(), lr=sgd_lr, momentum=sgd_momentum)
+    optimizer = torch.optim.SGD(model.parameters(),
+                                lr=sgd_lr,
+                                momentum=sgd_momentum)
 
     logging.info("🦊 Training Kitsune ensemble ...")
     log_every = n_samples / (log_freq * batch_size)
@@ -116,7 +123,8 @@ def train(
             epoch=epoch,
         )
 
-    logging.info(f"🦊 Serializing the model to {checkpoint_dir / 'kitsune.pt'} ...")
+    logging.info(
+        f"🦊 Serializing the model to {checkpoint_dir / 'kitsune.pt'} ...")
     scaler.save(checkpoint_dir)
     model.save(checkpoint_dir / "kitsune.pt")
     with open(checkpoint_dir / "losses.json", "wt") as f:
