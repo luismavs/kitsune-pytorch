@@ -86,6 +86,7 @@ def train(
             dp,
             ds_features=n_features,
             max_features_per_cluster=max_features_per_cluster,
+            fpath=None,
         )
     else:
         feature_mapper = FeatureMapper.load(pretrained_mapper)

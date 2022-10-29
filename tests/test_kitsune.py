@@ -99,7 +99,7 @@ def test_training(tmp_path: Path):
     )
 
     assert losses["epoch"] == 2
-    assert losses["tail_losses"] > 6.413 and losses["tail_losses"] < 6.420
+    assert losses["tail_losses"] > 6.410 and losses["tail_losses"] < 6.420
     assert losses["head_loss"] >= 0.124 and losses["head_loss"] < 0.125
 
 
