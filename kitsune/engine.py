@@ -1,6 +1,6 @@
 import logging
 from time import time
-from typing import Iterable, Tuple
+from typing import Iterable, Optional, Tuple
 
 import torch
 import torch.nn as nn
@@ -24,13 +24,14 @@ def build_feature_mapper(
     ds: Iterable[torch.Tensor],
     ds_features: int,
     max_features_per_cluster: int = 10,
-    fpath: str = "models/fmapper.pkl",
+    fpath: Optional[str] = "models/fmapper.pkl",
 ) -> FeatureMapper:
     fm = FeatureMapper(ds_features, max_features_per_cluster)
     for batch in tqdm(ds):
         fm.partial_fit(batch)
 
-    fm.save(fpath)
+    if fpath:
+        fm.save(fpath)
     return fm
 
 
