@@ -1,6 +1,6 @@
 [project]
 name = "kitsune"
-version = "0.2.8"
+version = "0.2.9"
 description = "Kitsune anomaly detection model implemented in PyTorch."
 authors = [
     "Guillem Orellana Trullols <guillem.orellana@gmail.com>",
