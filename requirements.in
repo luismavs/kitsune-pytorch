@@ -1,6 +1,6 @@
 typer
-torch~=1.11
-torchdata~=0.3
+torch
+torchdata
 pandas~=1.4
 scikit-learn~=1.0
 scipy~=1.8

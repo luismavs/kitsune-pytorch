@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="inw-kitsunetorch",
-    version="0.2.11",
+    version="0.2.12",
     description="Kitsune anomaly detection model implemented in PyTorch.",
     author="Guillem Orellana Trullols",
     author_email="guillem.orellana@gmail.com",
@@ -13,9 +13,9 @@ setup(
     python_requires="~=3.8",
     install_requires=[
         "typer",
-        "torch~=1.11",
-        "torchdata>=0.3",
-        "pandas~=1.2",
+        "torch",
+        "torchdata",
+        "pandas>=1.2",
         "scikit-learn>=0.24",
         "scipy~=1.8",
         "tqdm",
